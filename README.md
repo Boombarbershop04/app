@@ -68,7 +68,7 @@ BoomBarbershop/
 
 1. **Clonează repository-ul**
    ```bash
-   git clone [URL_REPOSITORY]
+   git clone https://github.com/Boombarbershop04/app.git
    cd BoomBarbershop
    ```
 
@@ -157,4 +157,4 @@ Pentru suport tehnic sau întrebări despre proiect, contactează echipa de dezv
 
 ---
 
-**BOOM Barbershop** - Experiența perfectă de frizerie tradițională 
+**BOOM Barbershop** - Experiența perfectă de frizerie tradițională
