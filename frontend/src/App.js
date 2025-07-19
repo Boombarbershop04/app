@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import { addDays, format, isSameDay, isToday, startOfMonth, endOfMonth, isBefore, isAfter } from "date-fns";
@@ -405,6 +405,8 @@ function App() {
   const [services, setServices] = useState([]);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "" });
   const [reservationStatus, setReservationStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   // Scroll effect pentru header
   useEffect(() => {
@@ -488,23 +490,47 @@ function App() {
   };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    
+    // Previne submit-ul multiplu cu useRef pentru siguranță
+    if (isSubmittingRef.current) {
+      console.log('Submit already in progress, ignoring...');
+      return;
+    }
+    
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
     setReservationStatus(null);
-    // Creez programarea în Supabase
-    const { error } = await supabase.from('appointments').insert({
-      user_name: formData.name,
-      user_phone: formData.phone,
-      user_email: formData.email || null,
-      barber_id: selectedSpecialist.id, // uuid-ul real!
-      service_id: selectedService?.id || null,
-      service_name: selectedService?.name || null,
-      date: format(selectedDate, 'yyyy-MM-dd'),
-      hour: selectedSlot,
-      status: 'pending'
-    });
-    if (!error) {
-      setReservationStatus('success');
-    } else {
+    
+    try {
+      console.log('Starting form submission...');
+      
+      // Creez programarea în Supabase
+      const { error } = await supabase.from('appointments').insert({
+        user_name: formData.name,
+        user_phone: formData.phone,
+        user_email: formData.email || null,
+        barber_id: selectedSpecialist.id, // uuid-ul real!
+        service_id: selectedService?.id || null,
+        service_name: selectedService?.name || null,
+        date: format(selectedDate, 'yyyy-MM-dd'),
+        hour: selectedSlot,
+        status: 'pending'
+      });
+      
+      if (!error) {
+        console.log('Appointment created successfully');
+        setReservationStatus('success');
+      } else {
+        console.error('Error creating appointment:', error);
+        setReservationStatus('error');
+      }
+    } catch (error) {
+      console.error('Exception during form submission:', error);
       setReservationStatus('error');
+    } finally {
+      console.log('Form submission completed, resetting state...');
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -828,8 +854,12 @@ function App() {
                           value={formData.email}
                           onChange={handleFormChange}
                         />
-                        <button type="submit" className="calendar-confirm-btn">
-                          Finalizează programarea
+                        <button 
+                          type="submit" 
+                          className="calendar-confirm-btn"
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? 'Se procesează...' : 'Finalizează programarea'}
                         </button>
                       </form>
 

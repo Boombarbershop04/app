@@ -751,14 +751,16 @@ body::before {
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   gap: 0.5rem;
+  overflow-x: auto;
 }
 
 .admin-dash-header-row, .admin-dash-row {
-  display: grid;
-  grid-template-columns: 80px repeat(auto-fit, minmax(150px, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: 0.5rem;
   padding: 0.5rem;
   align-items: center;
+  min-width: max-content;
 }
 
 .admin-dash-hour-col {
@@ -769,6 +771,8 @@ body::before {
   text-align: center;
   font-size: 0.9rem;
   color: #111;
+  width: 80px;
+  flex-shrink: 0;
 }
 
 .admin-dash-spec-col {
@@ -779,6 +783,8 @@ body::before {
   text-align: center;
   font-size: 0.9rem;
   color: #111;
+  width: 150px;
+  flex-shrink: 0;
 }
 
 .admin-dash-slot {
@@ -794,6 +800,8 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 150px;
+  flex-shrink: 0;
 }
 
 .admin-dash-slot-free {
@@ -851,6 +859,129 @@ body::before {
   .admin-dash-hour-col, .admin-dash-spec-col, .admin-dash-slot {
     font-size: 0.8rem;
     padding: 0.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 0.5rem;
+  }
+  
+  .admin-dash-calendar {
+    overflow-x: auto;
+    padding: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .admin-dash-header-row, .admin-dash-row {
+    gap: 0.2rem;
+    padding: 0.2rem;
+  }
+  
+  .admin-dash-hour-col {
+    width: 50px;
+    font-size: 0.7rem;
+    padding: 0.3rem;
+  }
+  
+  .admin-dash-spec-col {
+    width: 80px;
+    font-size: 0.65rem;
+    padding: 0.3rem;
+  }
+  
+  .admin-dash-slot {
+    width: 80px;
+    font-size: 0.65rem;
+    padding: 0.3rem;
+    min-height: 40px;
+  }
+  
+  .admin-dash-slot span {
+    font-size: 0.6rem;
+  }
+  
+  .admin-dash-accept {
+    font-size: 0.55rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-dashboard {
+    padding: 0.3rem;
+  }
+  
+  .admin-dash-calendar {
+    padding: 0.3rem;
+  }
+  
+  .admin-dash-header-row, .admin-dash-row {
+    gap: 0.15rem;
+    padding: 0.15rem;
+  }
+  
+  .admin-dash-hour-col {
+    width: 45px;
+    font-size: 0.65rem;
+    padding: 0.2rem;
+  }
+  
+  .admin-dash-spec-col {
+    width: 70px;
+    font-size: 0.6rem;
+    padding: 0.2rem;
+  }
+  
+  .admin-dash-slot {
+    width: 70px;
+    font-size: 0.6rem;
+    padding: 0.2rem;
+    min-height: 35px;
+  }
+  
+  .admin-dash-slot span {
+    font-size: 0.55rem;
+  }
+  
+  .admin-dash-accept {
+    font-size: 0.5rem;
+    padding: 0.15rem 0.3rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-dash-calendar {
+    overflow-x: auto;
+    min-width: 180px;
+    padding: 0;
+  }
+  .admin-dash-header-row, .admin-dash-row {
+    gap: 0;
+    padding: 0;
+  }
+  .admin-dash-hour-col {
+    width: 32px;
+    font-size: 0.5rem;
+    padding: 0.08rem;
+  }
+  .admin-dash-spec-col {
+    width: 54px;
+    font-size: 0.48rem;
+    padding: 0.08rem;
+  }
+  .admin-dash-slot {
+    width: 54px;
+    font-size: 0.48rem;
+    padding: 0.08rem;
+    min-height: 24px;
+  }
+  .admin-dash-slot span {
+    font-size: 0.42rem;
+  }
+  .admin-dash-accept {
+    font-size: 0.38rem;
+    padding: 0.05rem 0.1rem;
   }
 }
 
@@ -1480,6 +1611,7 @@ body::before {
 .calendar-confirm-btn:disabled {
   background: rgba(212, 175, 55, 0.3);
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .calendar-back {
