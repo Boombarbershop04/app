@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 import { addDays, format, isSameDay, isToday, startOfMonth, endOfMonth, isBefore, isAfter } from "date-fns";
@@ -69,19 +69,19 @@ function AdminLogin() {
 }
 
 function AdminDashboard() {
-  const [specialists, setSpecialists] = React.useState([]);
-  const [hours] = React.useState(ALL_SLOTS);
+  const [specialists, setSpecialists] = useState([]);
+  const [hours] = useState(ALL_SLOTS);
   // Navigare pe zile cu săgeți
-  const [adminDay, setAdminDay] = React.useState(new Date());
-  const [selectedDay, setSelectedDay] = React.useState(format(adminDay, 'yyyy-MM-dd'));
-  React.useEffect(() => {
+  const [adminDay, setAdminDay] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState(format(adminDay, 'yyyy-MM-dd'));
+  useEffect(() => {
     setSelectedDay(format(adminDay, 'yyyy-MM-dd'));
   }, [adminDay]);
-  const [bookings, setBookings] = React.useState([]);
-  const [pending, setPending] = React.useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [pending, setPending] = useState([]);
 
   // Fetch barbers din Supabase
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchBarbers() {
       const { data } = await supabase.from('barbers').select('*').order('name');
       if (data) setSpecialists(data);
@@ -90,7 +90,7 @@ function AdminDashboard() {
   }, []);
 
   // Realtime update appointments
-  React.useEffect(() => {
+  useEffect(() => {
     const channel = supabase.channel('realtime:appointments')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, payload => {
         // Refetch bookings și pending la orice modificare
@@ -158,7 +158,7 @@ function AdminDashboard() {
   }
 
   // Controller pentru gestionare barbers
-  const [newBarber, setNewBarber] = React.useState({ name: '', description: '', avatar_url: '' });
+  const [newBarber, setNewBarber] = useState({ name: '', description: '', avatar_url: '' });
   async function handleBarberChange(id, field, value) {
     await supabase.from('barbers').update({ [field]: value }).eq('id', id);
     setSpecialists(specialists => specialists.map(b => b.id === id ? { ...b, [field]: value } : b));
@@ -176,9 +176,9 @@ function AdminDashboard() {
   }
 
   // Controller pentru gestionare servicii
-  const [services, setServices] = React.useState([]);
-  const [newService, setNewService] = React.useState({ name: '', description: '', price: '', discount_percent: '' });
-  React.useEffect(() => {
+  const [services, setServices] = useState([]);
+  const [newService, setNewService] = useState({ name: '', description: '', price: '', discount_percent: '' });
+  useEffect(() => {
     async function fetchServices() {
       const { data } = await supabase.from('services').select('*').order('name');
       if (data) setServices(data);
@@ -209,7 +209,7 @@ function AdminDashboard() {
   }
 
   // State pentru modal slot
-  const [slotModal, setSlotModal] = React.useState({ open: false, barber: null, hour: null, slot: null });
+  const [slotModal, setSlotModal] = useState({ open: false, barber: null, hour: null, slot: null });
 
   // Handler click pe slot
   function handleSlotClick(barber, hour) {
@@ -257,7 +257,7 @@ function AdminDashboard() {
   }
 
   // Pentru lookup rapid la servicii după id
-  const serviceMap = React.useMemo(() => {
+  const serviceMap = useMemo(() => {
     const map = {};
     services.forEach(s => { map[s.id] = s; });
     return map;
@@ -407,7 +407,7 @@ function App() {
   const [reservationStatus, setReservationStatus] = useState(null);
 
   // Scroll effect pentru header
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       const header = document.querySelector('.boom-header');
       if (header) {
@@ -436,7 +436,7 @@ function App() {
   const handleCloseCalendar = () => setCalendarOpen(false);
 
   // Fetch barbers din Supabase pentru user
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchBarbers() {
       const { data } = await supabase.from('barbers').select('*').order('name');
       if (data) setBarbers(data);
@@ -445,7 +445,7 @@ function App() {
   }, []);
 
   // Fetch & subscribe la servicii din Supabase
-  React.useEffect(() => {
+  useEffect(() => {
     let channel;
     async function fetchServices() {
       const { data } = await supabase.from('services').select('*').order('name');
@@ -848,8 +848,8 @@ function App() {
 
 // CalendarUserSlots component pentru sloturi user cu greyed out
 function CalendarUserSlots({ selectedSpecialist, selectedDate, selectedSlot, setSelectedSlot }) {
-  const [bookings, setBookings] = React.useState([]);
-  React.useEffect(() => {
+  const [bookings, setBookings] = useState([]);
+  useEffect(() => {
     async function fetchBookings() {
       if (!selectedSpecialist || !selectedDate) return;
       const { data } = await supabase
@@ -898,7 +898,7 @@ function CalendarUserSlots({ selectedSpecialist, selectedDate, selectedSlot, set
 function RequireAdmin({ children }) {
   const isAdmin = localStorage.getItem("isAdmin") === "true";
   const navigate = useNavigate();
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isAdmin) navigate("/admin", { replace: true });
   }, [isAdmin, navigate]);
   return isAdmin ? children : null;
