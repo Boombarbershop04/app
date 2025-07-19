@@ -81,7 +81,11 @@ BoomBarbershop/
 3. **Configurează Supabase**
    - Creează un proiect pe [supabase.com](https://supabase.com)
    - Copiază URL-ul și cheia API din Settings > API
-   - Actualizează `supabaseClient.js` cu credențialele tale
+   - Creează un fișier `.env` în directorul `frontend/` cu următoarele variabile:
+   ```env
+   REACT_APP_SUPABASE_URL=your_supabase_project_url_here
+   REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+   ```
 
 4. **Creează tabelele în Supabase**
    ```sql
@@ -121,6 +125,39 @@ BoomBarbershop/
    ```bash
    npm start
    ```
+
+## 🌐 Deployment pe Vercel
+
+### Pași pentru Vercel:
+
+1. **Creează cont pe Vercel**
+   - Mergi la [vercel.com](https://vercel.com)
+   - Înregistrează-te cu contul GitHub
+
+2. **Importă proiectul**
+   - Click "New Project"
+   - Selectează repository-ul `Boombarbershop04/app`
+   - Vercel va detecta automat că este un proiect React
+
+3. **Configurează variabilele de mediu**
+   - În secțiunea "Environment Variables" adaugă:
+   ```
+   REACT_APP_SUPABASE_URL = your_supabase_project_url
+   REACT_APP_SUPABASE_ANON_KEY = your_supabase_anon_key
+   ```
+
+4. **Deploy**
+   - Click "Deploy"
+   - Vercel va construi și deploya automat aplicația
+
+### Configurare Vercel:
+- **Framework Preset**: Create React App (detectat automat)
+- **Build Command**: `npm run build` (implicit)
+- **Output Directory**: `build` (implicit)
+- **Install Command**: `npm install` (implicit)
+
+### URL-ul va fi:
+`https://your-project-name.vercel.app`
 
 ## 🔧 Configurare Admin
 
