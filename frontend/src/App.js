@@ -407,6 +407,7 @@ function App() {
   const [reservationStatus, setReservationStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
+  const [submitAttempts, setSubmitAttempts] = useState(0);
 
   // Scroll effect pentru header
   useEffect(() => {
@@ -493,16 +494,40 @@ function App() {
     
     // Previne submit-ul multiplu cu useRef pentru siguranță
     if (isSubmittingRef.current) {
-      console.log('Submit already in progress, ignoring...');
+      setSubmitAttempts(prev => prev + 1);
+      setReservationStatus('duplicate');
+      console.log('Submit already in progress, showing warning...');
+      
+      // Resetează warning-ul după 3 secunde
+      setTimeout(() => {
+        setReservationStatus(null);
+      }, 3000);
+      
       return;
     }
     
     isSubmittingRef.current = true;
     setIsSubmitting(true);
     setReservationStatus(null);
+    setSubmitAttempts(0);
     
     try {
       console.log('Starting form submission...');
+      
+      // Verific dacă slotul este încă disponibil înainte de submit
+      const { data: existingBookings } = await supabase
+        .from('appointments')
+        .select('*')
+        .eq('barber_id', selectedSpecialist.id)
+        .eq('date', format(selectedDate, 'yyyy-MM-dd'))
+        .eq('hour', selectedSlot)
+        .in('status', ['pending', 'accepted', 'confirmed']);
+      
+      if (existingBookings && existingBookings.length > 0) {
+        console.log('Slot is no longer available');
+        setReservationStatus('slot_occupied');
+        return;
+      }
       
       // Creez programarea în Supabase
       const { error } = await supabase.from('appointments').insert({
@@ -827,6 +852,18 @@ function App() {
                       {reservationStatus === 'error' && (
                         <div className="calendar-form-error">
                           A apărut o eroare la crearea programării. Te rugăm să încerci din nou.
+                        </div>
+                      )}
+                      
+                      {reservationStatus === 'slot_occupied' && (
+                        <div className="calendar-form-error">
+                          Acest slot nu mai este disponibil. Te rugăm să alegi altă oră.
+                        </div>
+                      )}
+                      
+                      {reservationStatus === 'duplicate' && (
+                        <div className="calendar-form-warning">
+                          Programarea a fost deja trimisă! Te rugăm să aștepți...
                         </div>
                       )}
 

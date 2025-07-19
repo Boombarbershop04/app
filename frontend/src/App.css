@@ -1355,6 +1355,16 @@ body::before {
   margin-bottom: 1rem;
 }
 
+.calendar-form-warning {
+  color: #856404;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
 /* Calendar Stepper */
 .calendar-stepper {
   display: flex;
