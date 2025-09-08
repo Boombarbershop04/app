@@ -308,6 +308,8 @@ function AdminDashboard() {
           ))}
         </div>
       </div>
+
+      {/* Footer legal mutat pe public site */}
       <div className="admin-dash-date-header">
         <button className="calendar-arrow" onClick={() => setAdminDay(addDays(adminDay, -1))}>&#8592;</button>
         <span className="admin-dash-date-label">{format(adminDay, "EEEE, d MMMM yyyy", {locale: ro})}</span>

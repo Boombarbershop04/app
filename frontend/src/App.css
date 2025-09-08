@@ -28,7 +28,7 @@ body::before {
   width: 100%;
   height: 100vh;
   background-image: url('./boom-location.jpg'), url('./plaza-romania-2016.jpg');
-  background-position: center center;
+  background-position: center 30%;
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -541,10 +541,7 @@ body::before {
 }
 
 .contact-social {
-  display: flex;
-  justify-content: flex-start;
-  gap: 3rem;
-  margin-top: 2rem;
+  display: none; /* ascuns temporar până avem link-uri */
 }
 
 .social-item {
@@ -625,6 +622,40 @@ body::before {
 
 @media (max-width: 980px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 560px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+/* Footer legal */
+.site-footer {
+  width: 100%;
+  margin-top: 3rem;
+  padding: 1.5rem 1rem 3rem 1rem;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+}
+
+.legal-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 1rem;
+}
+
+.legal-text {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 0.25rem 0;
+}
+
+.legal-links a {
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+}
+
+.legal-links a:hover {
+  color: var(--gold);
+  text-decoration: underline;
+}
 
 .team-title {
   font-size: 2.5rem;
@@ -740,6 +771,13 @@ body::before {
     flex-direction: column;
     gap: 0.5rem;
   }
+  /* Imaginea de fundal pe mobile: fără fixed, mai întunecată și poziționată sus */
+  body::before {
+    background-attachment: scroll;
+    background-position: center 25%;
+    filter: grayscale(100%) contrast(115%) brightness(0.6);
+    opacity: 0.26;
+  }
   
   .boom-nav {
     gap: 1rem;
@@ -791,6 +829,10 @@ body::before {
 @media (max-width: 480px) {
   .hero-title {
     font-size: 2rem;
+  }
+  body::before {
+    background-position: center 18%;
+    opacity: 0.24;
   }
   
   .hero-description {
