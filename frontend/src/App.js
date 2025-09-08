@@ -267,18 +267,7 @@ function AdminDashboard() {
     <div className="admin-dashboard">
       <button style={{position: 'absolute', top: 18, right: 24, background: '#111', color: '#fff', border: 'none', borderRadius: 7, padding: '0.5rem 1.2rem', fontWeight: 700, cursor: 'pointer'}} onClick={handleLogout}>Logout</button>
       <h2 className="admin-dash-title">Calendar programări</h2>
-      {pending.length > 0 && (
-        <div className="admin-alert-pending">
-          <b>Solicitări în așteptare:</b>
-          {pending.map(p => (
-            <div key={p.id} className="admin-alert-pending-row">
-              <span>{p.user_name} ({p.user_phone}) - {p.barbers?.name || ''}, {p.date} {p.hour}</span>
-              <button className="admin-dash-accept" onClick={() => handleAccept(p.id)}>Acceptă</button>
-              <button className="admin-dash-reject" onClick={() => handleReject(p.id)}>Respinge</button>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Pending section ascunsă la cerere */}
       <div className="admin-barbers-controller">
         <h3>Gestionează frizerii</h3>
         <form className="admin-barber-add" onSubmit={handleBarberAdd}>
@@ -346,7 +335,7 @@ function AdminDashboard() {
                   {slot.status === "pending" && (
                     <>
                       <span className="slot-pending">Solicitare: {slot.user_name}</span>
-                      <button className="admin-dash-accept" onClick={e => { e.stopPropagation(); handleAccept(slot.id); }}>Acceptă</button>
+                      <button className="admin-dash-accept" onClick={e => { e.stopPropagation(); handleAccept(slot.id); }}>Marchează acceptat</button>
                     </>
                   )}
                   {slot.status === "accepted" && (
@@ -533,13 +522,13 @@ function App() {
       const { error } = await supabase.from('appointments').insert({
         user_name: formData.name,
         user_phone: formData.phone,
-        user_email: formData.email || null,
+        user_email: formData.email ? formData.email : '',
         barber_id: selectedSpecialist.id, // uuid-ul real!
         service_id: selectedService?.id || null,
         service_name: selectedService?.name || null,
         date: format(selectedDate, 'yyyy-MM-dd'),
         hour: selectedSlot,
-        status: 'pending'
+        status: 'accepted'
       });
       
       if (!error) {
@@ -685,54 +674,79 @@ function App() {
               </div>
             </div>
             
-            {/* Zona Contact */}
-            <div className="contact-section" id="contact">
-              <div className="contact-header">
-                <h3 className="contact-subtitle">CONTACT</h3>
-                <h2 className="contact-main-title">București</h2>
+            {/* Galerie foto - interior + freze */}
+            <div className="gallery-section" id="galerie">
+              <h3 className="gallery-title">Galerie</h3>
+              <div className="gallery-grid">
+                <div className="gallery-card"><img src={require('./incapere1.jpg')} alt="Interior 1" /></div>
+                <div className="gallery-card"><img src={require('./incapere2.jpeg')} alt="Interior 2" /></div>
+                <div className="gallery-card"><img src={require('./freza1.jpg')} alt="Freza 1" /></div>
+                <div className="gallery-card"><img src={require('./freza2.jpg')} alt="Freza 2" /></div>
+                <div className="gallery-card"><img src={require('./freza3.jpg')} alt="Freza 3" /></div>
+                <div className="gallery-card"><img src={require('./freza4.jpg')} alt="Freza 4" /></div>
               </div>
-              
-              <div className="contact-content">
-                <div className="contact-details">
-                  <div className="contact-address">
-                    <p>Bulevardul Timișoara 123</p>
-                    <p>București, România</p>
-                    <p>010123</p>
+            </div>
+
+            {/* Zona Contact cu hartă în dreapta */}
+            <div className="contact-with-map">
+              <div className="contact-section" id="contact">
+                <div className="contact-header">
+                  <h3 className="contact-subtitle">CONTACT</h3>
+                  <h2 className="contact-main-title">București</h2>
+                </div>
+                
+                <div className="contact-content">
+                  <div className="contact-details">
+                    <div className="contact-address">
+                      <p>Bulevardul Timișoara 43, Bl. 34</p>
+                      <p>București, 061344, România</p>
+                    </div>
+                    
+                    <div className="contact-phone">
+                      <p>0773980782</p>
+                    </div>
+                    
+                    <div className="contact-email">
+                      <p>boombarbershop2025@gmail.com</p>
+                    </div>
                   </div>
                   
-                  <div className="contact-phone">
-                    <p>+40 21 123 4567</p>
-                  </div>
-                  
-                  <div className="contact-email">
-                    <p>info@boombarbershop.ro</p>
+                  <div className="contact-hours">
+                    <h4>Program de lucru</h4>
+                    <div className="hours-list">
+                      <p><strong>LUNI:</strong> ÎNCHIS</p>
+                      <p><strong>MARȚI:</strong> 10:00 - 20:00</p>
+                      <p><strong>MIERCURI:</strong> 10:00 - 20:00</p>
+                      <p><strong>JOI:</strong> 10:00 - 20:00</p>
+                      <p><strong>VINERI:</strong> 10:00 - 20:00</p>
+                      <p><strong>SÂMBĂTĂ:</strong> 10:00 - 18:00</p>
+                      <p><strong>DUMINICĂ:</strong> 10:00 - 18:00</p>
+                    </div>
                   </div>
                 </div>
                 
-                <div className="contact-hours">
-                  <h4>Program de lucru</h4>
-                  <div className="hours-list">
-                    <p><strong>LUNI:</strong> ÎNCHIS</p>
-                    <p><strong>MARȚI:</strong> 10:00 - 20:00</p>
-                    <p><strong>MIERCURI:</strong> 10:00 - 20:00</p>
-                    <p><strong>JOI:</strong> 10:00 - 20:00</p>
-                    <p><strong>VINERI:</strong> 10:00 - 20:00</p>
-                    <p><strong>SÂMBĂTĂ:</strong> 10:00 - 18:00</p>
-                    <p><strong>DUMINICĂ:</strong> 10:00 - 18:00</p>
+                <div className="contact-social">
+                  <div className="social-item">
+                    <span>FACEBOOK</span>
+                    <div className="social-bullet"></div>
+                  </div>
+                  <div className="social-item">
+                    <span>INSTAGRAM</span>
+                    <div className="social-bullet"></div>
                   </div>
                 </div>
               </div>
               
-              <div className="contact-social">
-                <div className="social-item">
-                  <span>FACEBOOK</span>
-                  <div className="social-bullet"></div>
+              <aside className="contact-map-aside" aria-label="Harta Boom Barbershop">
+                <div className="map-aside-inner">
+                  <iframe
+                    title="Boom Barbershop Map"
+                    src="https://www.google.com/maps?width=100%25&height=600&hl=ro&q=Bulevardul%20Timi%C8%99oara%2043%2C%20Bloc%2034%2C%20Bucure%C8%99ti%20061344&t=&z=16&ie=UTF8&iwloc=B&output=embed"
+                    allowFullScreen
+                    loading="lazy"
+                  ></iframe>
                 </div>
-                <div className="social-item">
-                  <span>INSTAGRAM</span>
-                  <div className="social-bullet"></div>
-                </div>
-              </div>
+              </aside>
             </div>
 
             {/* Calendar Modal */}
