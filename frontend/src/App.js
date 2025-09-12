@@ -14,15 +14,15 @@ const SPECIALISTS = [
 ];
 
 const SLOT_GROUPS = [
-  { label: "Dimineață", range: [10, 12] },
+  { label: "Dimineață", range: [9, 12] },
   { label: "Amiază", range: [12, 16] },
-  { label: "Seară", range: [16, 20] }
+  { label: "Seară", range: [16, 21] }
 ];
 
 // Definim ALL_SLOTS unic pentru ambele calendare
 const ALL_SLOTS = (() => {
   const slots = [];
-  for (let h = 10; h < 20; ++h) {
+  for (let h = 9; h < 21; ++h) {
     for (let m = 0; m < 60; m += 40) {
       slots.push(`${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`);
     }
@@ -47,9 +47,11 @@ function AdminLogin() {
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
   const handleSubmit = e => {
     e.preventDefault();
-    // demo: user admin, pass admin
-    if (form.user === "admin" && form.pass === "admin") {
+    // simple auth: user "bobo", pass "$Boom"
+    if (form.user === "bobo" && form.pass === "$Boom") {
       localStorage.setItem("isAdmin", "true");
+      // persist for current session
+      sessionStorage.setItem("isAdmin", "true");
       navigate("/admin/dashboard");
     } else {
       setError("Date de autentificare incorecte!");
@@ -398,6 +400,16 @@ function App() {
   const [reservationStatus, setReservationStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
+  // simple scroll reveal for elements with class 'reveal'
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    return () => io.disconnect();
+  }, []);
   const [submitAttempts, setSubmitAttempts] = useState(0);
 
   // Scroll effect pentru header
@@ -567,20 +579,19 @@ function App() {
 
   // --- În componentă, definesc days, todayIdx și isOpenNow ---
   const days = [
-    { label: 'Luni', hours: '10:00 - 20:00' },
-    { label: 'Marți', hours: '10:00 - 20:00' },
-    { label: 'Miercuri', hours: '10:00 - 20:00' },
-    { label: 'Joi', hours: '10:00 - 20:00' },
-    { label: 'Vineri', hours: '10:00 - 20:00' },
-    { label: 'Sâmbătă', hours: '10:00 - 20:00' },
-    { label: 'Duminică', hours: '10:00 - 18:00' },
+    { label: 'Luni', hours: '09:00 - 21:00' },
+    { label: 'Marți', hours: '09:00 - 21:00' },
+    { label: 'Miercuri', hours: '09:00 - 21:00' },
+    { label: 'Joi', hours: '09:00 - 21:00' },
+    { label: 'Vineri', hours: '09:00 - 21:00' },
+    { label: 'Sâmbătă', hours: '09:00 - 21:00' },
+    { label: 'Duminică', hours: '09:00 - 21:00' },
   ];
   const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
   const now = new Date();
   const isOpenNow = (() => {
     const h = now.getHours(), m = now.getMinutes();
-    if (todayIdx < 6) return h >= 10 && (h < 20 || (h === 20 && m === 0));
-    return h >= 10 && (h < 18 || (h === 18 && m === 0));
+    return h >= 9 && (h < 21 || (h === 21 && m === 0));
   })();
 
   return (
@@ -589,7 +600,7 @@ function App() {
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
         <Route path="/*" element={
-          <div className="main-layout">
+          <div className="main-layout" onScroll={() => {}}>
             {/* Header elegant cu logo */}
             <header className="boom-header">
               <nav className="boom-nav">
@@ -628,7 +639,7 @@ function App() {
             
             {/* Servicii stilizate */}
             <div className="services-section" id="services">
-              <h3 className="services-title">Serviciile noastre</h3>
+              <h3 className="services-title reveal">Serviciile noastre</h3>
               <div className="services-list-direct">
                 {services.map(service => {
                   const discount = parseInt(service.discount_percent) > 0 ? parseInt(service.discount_percent) : 0;
@@ -668,7 +679,7 @@ function App() {
             </div>
             
             {/* Zona Echipă */}
-            <div className="team-section" id="team">
+            <div className="team-section reveal" id="team">
               <h3 className="team-title">Echipa noastră</h3>
               <div className="team-placeholder">
                 <p>În curând vom prezenta echipa noastră de specialiști dedicați.</p>
@@ -679,7 +690,7 @@ function App() {
             {/* Galerie foto - interior + freze */}
             <div className="gallery-section" id="galerie">
               <h3 className="gallery-title">Galerie</h3>
-              <div className="gallery-grid">
+              <div className="gallery-grid reveal">
                 <div className="gallery-card"><img src={require('./incapere1.jpg')} alt="Interior 1" /></div>
                 <div className="gallery-card"><img src={require('./incapere2.jpeg')} alt="Interior 2" /></div>
                 <div className="gallery-card"><img src={require('./freza1.jpg')} alt="Freza 1" /></div>
@@ -716,13 +727,13 @@ function App() {
                   <div className="contact-hours">
                     <h4>Program de lucru</h4>
                     <div className="hours-list">
-                      <p><strong>LUNI:</strong> ÎNCHIS</p>
-                      <p><strong>MARȚI:</strong> 10:00 - 20:00</p>
-                      <p><strong>MIERCURI:</strong> 10:00 - 20:00</p>
-                      <p><strong>JOI:</strong> 10:00 - 20:00</p>
-                      <p><strong>VINERI:</strong> 10:00 - 20:00</p>
-                      <p><strong>SÂMBĂTĂ:</strong> 10:00 - 18:00</p>
-                      <p><strong>DUMINICĂ:</strong> 10:00 - 18:00</p>
+                      <p><strong>LUNI:</strong> 09:00 - 21:00</p>
+                      <p><strong>MARȚI:</strong> 09:00 - 21:00</p>
+                      <p><strong>MIERCURI:</strong> 09:00 - 21:00</p>
+                      <p><strong>JOI:</strong> 09:00 - 21:00</p>
+                      <p><strong>VINERI:</strong> 09:00 - 21:00</p>
+                      <p><strong>SÂMBĂTĂ:</strong> 09:00 - 21:00</p>
+                      <p><strong>DUMINICĂ:</strong> 09:00 - 21:00</p>
                     </div>
                   </div>
                 </div>
@@ -979,7 +990,7 @@ function CalendarUserSlots({ selectedSpecialist, selectedDate, selectedSlot, set
 }
 
 function RequireAdmin({ children }) {
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const isAdmin = (localStorage.getItem("isAdmin") === "true") || (sessionStorage.getItem("isAdmin") === "true");
   const navigate = useNavigate();
   useEffect(() => {
     if (!isAdmin) navigate("/admin", { replace: true });

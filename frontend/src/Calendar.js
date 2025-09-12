@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { addDays, format, isSameDay, isBefore } from "date-fns";
 import { ro } from "date-fns/locale";
 
-const HOURS_START = 10;
-const HOURS_END = 18;
+const HOURS_START = 9;
+const HOURS_END = 21;
 const SLOT_MINUTES = 40;
 const CAROUSEL_SIZE = 4;
 const CALENDAR_DAYS = 60; // 2 luni
