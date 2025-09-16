@@ -566,6 +566,7 @@ function App() {
   const daysOfMonth = getDaysOfMonth(calendarMonth);
   const weekDays = ["Lu", "Ma", "Mi", "Jo", "Vi", "Sâ", "Du"];
   const today = new Date();
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
   // Demo: sloturi ocupate random
   const busySlots = {
@@ -630,16 +631,17 @@ function App() {
               <div className="hero-section">
                 <p className="hero-subtitle-main">Barbershop</p>
                 <p className="hero-description">
-                  O frizerie tradițională inspirată, oferind experiențe personalizate de cea mai înaltă calitate. 
-                  Echipa noastră de specialiști dedicați îți oferă servicii profesionale într-un mediu elegant și confortabil. 
-                  De la tunsori clasice până la stiluri moderne, suntem aici să îți oferim experiența perfectă.
+                  BOOM Barbershop București - frizerie premium lângă Plaza Mall, Timișoara 43. 
+                  Oferim tunsori moderne și bărbierit tradițional într-un spațiu modern și accesibil. 
+                  Echipa noastră de specialiști dedicați îți oferă servicii profesionale de cea mai înaltă calitate. 
+                  Programare online simplă și rapidă pentru experiența perfectă de frizerie în București.
                 </p>
               </div>
             </div>
             
             {/* Servicii stilizate */}
             <div className="services-section" id="services">
-              <h3 className="services-title reveal">Serviciile noastre</h3>
+              <h3 className="services-title reveal">Servicii Frizerie București - BOOM Barbershop</h3>
               <div className="services-list-direct">
                 {services.map(service => {
                   const discount = parseInt(service.discount_percent) > 0 ? parseInt(service.discount_percent) : 0;
@@ -703,16 +705,19 @@ function App() {
             {/* Zona Contact cu hartă în dreapta */}
             <div className="contact-with-map">
               <div className="contact-section" id="contact">
-                <div className="contact-header">
-                  <h3 className="contact-subtitle">CONTACT</h3>
-                  <h2 className="contact-main-title">București</h2>
-                </div>
+              <div className="contact-header">
+                <h3 className="contact-subtitle">CONTACT</h3>
+                <h2 className="contact-main-title">BOOM Barbershop București</h2>
+              </div>
                 
                 <div className="contact-content">
                   <div className="contact-details">
                     <div className="contact-address">
-                      <p>Bulevardul Timișoara 43, Bl. 34</p>
-                      <p>București, 061344, România</p>
+                      <p><strong>BOOM Barbershop București</strong></p>
+                      <p>Bulevardul Timișoara 43, Bloc 34</p>
+                      <p>București, Sector 1, România</p>
+                      <p>Cod poștal: 061344</p>
+                      <p><em>Lângă Plaza Mall București</em></p>
                     </div>
                     
                     <div className="contact-phone">
@@ -822,8 +827,9 @@ function App() {
                           {daysOfMonth.map(day => (
                             <button
                               key={day.toString()}
-                              className={`calendar-day-btn2${isSameDay(day, selectedDate) ? " selected" : ""}${isToday(day) ? " today" : ""}`}
-                              onClick={() => handleChooseDate(day)}
+                              className={`calendar-day-btn2${isSameDay(day, selectedDate) ? " selected" : ""}${isToday(day) ? " today" : ""}${isBefore(day, todayStart) ? " disabled" : ""}`}
+                              onClick={() => !isBefore(day, todayStart) && handleChooseDate(day)}
+                              disabled={isBefore(day, todayStart)}
                             >
                               {format(day, "d")}
                             </button>
@@ -955,9 +961,25 @@ function CalendarUserSlots({ selectedSpecialist, selectedDate, selectedSlot, set
     fetchBookings();
   }, [selectedSpecialist, selectedDate]);
   function isSlotUnavailable(slot) {
-    return bookings.some(b => b.hour === slot && (
+    // Check if slot is booked
+    const isBooked = bookings.some(b => b.hour === slot && (
       b.status === 'accepted' || b.status === 'confirmed' || b.status === 'pending' || b.status === 'pauza'
     ));
+    
+    // Check if slot is in the past for today
+    const isInPast = isSameDay(selectedDate, new Date()) && isSlotInPast(slot);
+    
+    return isBooked || isInPast;
+  }
+  
+  function isSlotInPast(slot) {
+    const [slotHour, slotMinute] = slot.split(':').map(Number);
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    
+    // Slot is in past if hour is less than current hour, or same hour but minute is less/equal
+    return slotHour < currentHour || (slotHour === currentHour && slotMinute <= currentMinute);
   }
   return (
     <div className="calendar-slots-groups">
