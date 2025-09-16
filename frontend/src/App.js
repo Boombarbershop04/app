@@ -822,9 +822,8 @@ function App() {
                           {daysOfMonth.map(day => (
                             <button
                               key={day.toString()}
-                              className={`calendar-day-btn2${isSameDay(day, selectedDate) ? " selected" : ""}${isToday(day) ? " today" : ""}${isBefore(day, today) ? " disabled" : ""}`}
-                              onClick={() => !isBefore(day, today) && handleChooseDate(day)}
-                              disabled={isBefore(day, today)}
+                              className={`calendar-day-btn2${isSameDay(day, selectedDate) ? " selected" : ""}${isToday(day) ? " today" : ""}`}
+                              onClick={() => handleChooseDate(day)}
                             >
                               {format(day, "d")}
                             </button>
