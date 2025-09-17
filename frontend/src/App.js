@@ -693,12 +693,15 @@ function App() {
             <div className="gallery-section" id="galerie">
               <h3 className="gallery-title">Galerie</h3>
               <div className="gallery-grid reveal">
-                <div className="gallery-card"><img src={require('./incapere1.jpg')} alt="Interior 1" /></div>
-                <div className="gallery-card"><img src={require('./incapere2.jpeg')} alt="Interior 2" /></div>
-                <div className="gallery-card"><img src={require('./freza1.jpg')} alt="Freza 1" /></div>
-                <div className="gallery-card"><img src={require('./freza2.jpg')} alt="Freza 2" /></div>
-                <div className="gallery-card"><img src={require('./freza3.jpg')} alt="Freza 3" /></div>
-                <div className="gallery-card"><img src={require('./freza4.jpg')} alt="Freza 4" /></div>
+                <div className="gallery-card"><img src={require('./incapere1.jpg')} alt="Interior BOOM Barbershop" /></div>
+                <div className="gallery-card"><img src={require('./incapere2.jpeg')} alt="Spațiu modern BOOM Barbershop" /></div>
+                <div className="gallery-card"><img src={require('./freza1.jpg')} alt="Tunsori moderne BOOM Barbershop" /></div>
+                <div className="gallery-card"><img src={require('./freza2.jpg')} alt="Servicii frizerie București" /></div>
+                <div className="gallery-card"><img src={require('./freza3.jpg')} alt="Bărbierit tradițional BOOM" /></div>
+                <div className="gallery-card"><img src={require('./freza4.jpg')} alt="Tunsori premium București" /></div>
+                <div className="gallery-card"><img src={require('./freza5.jpg')} alt="Frizerie BOOM Barbershop" /></div>
+                <div className="gallery-card"><img src={require('./freza6.jpg')} alt="Servicii profesionale București" /></div>
+                <div className="gallery-card"><img src={require('./freza7.jpg')} alt="Echipa BOOM Barbershop" /></div>
               </div>
             </div>
 
