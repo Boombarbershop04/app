@@ -108,7 +108,7 @@ function AdminDashboard() {
         .from('appointments')
         .select('*, barbers(name)')
         .eq('status', 'pending');
-      if (data) setPending(data);
+      // if (data) setPending(data); // Commented out - using real-time fetch
     }
     fetchBookings();
     fetchPending();
@@ -118,7 +118,7 @@ function AdminDashboard() {
   async function handleAccept(appointmentId) {
     await supabase.from('appointments').update({ status: 'accepted' }).eq('id', appointmentId);
     setBookings(prev => prev.map(b => b.id === appointmentId ? { ...b, status: 'accepted' } : b));
-    setPending(prev => prev.filter(b => b.id !== appointmentId));
+    // setPending(prev => prev.filter(b => b.id !== appointmentId)); // Commented out - using real-time fetch
   }
   // async function handleReject(appointmentId) {
   //   await supabase.from('appointments').update({ status: 'rejected' }).eq('id', appointmentId);
@@ -493,7 +493,7 @@ function App() {
     
     // Previne submit-ul multiplu cu useRef pentru siguranță
     if (isSubmittingRef.current) {
-      setSubmitAttempts(prev => prev + 1);
+      // setSubmitAttempts(prev => prev + 1); // Commented out - not used
       setReservationStatus('duplicate');
       console.log('Submit already in progress, showing warning...');
       
@@ -508,7 +508,7 @@ function App() {
     isSubmittingRef.current = true;
     setIsSubmitting(true);
     setReservationStatus(null);
-    setSubmitAttempts(0);
+    // setSubmitAttempts(0); // Commented out - not used
     
     try {
       console.log('Starting form submission...');
