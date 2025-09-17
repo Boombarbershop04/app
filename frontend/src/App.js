@@ -7,11 +7,7 @@ import { supabase } from "./supabaseClient";
 import logo from "./logo.png";
 import logo2 from "./logo2.png";
 
-const SPECIALISTS = [
-  { name: "Bobo", status: "liber", desc: "Patronul. Cea mai mare experiență, tunsori clasice și moderne." },
-  { name: "Alex", status: "liber", desc: "Specialist în tunsori moderne, rapid și atent la detalii." },
-  { name: "Mihai", status: "liber", desc: "Expert în fade-uri și bărbierit tradițional." }
-];
+// SPECIALISTS moved to Supabase database
 
 const SLOT_GROUPS = [
   { label: "Dimineață", range: [9, 12] },
@@ -80,7 +76,7 @@ function AdminDashboard() {
     setSelectedDay(format(adminDay, 'yyyy-MM-dd'));
   }, [adminDay]);
   const [bookings, setBookings] = useState([]);
-  const [pending, setPending] = useState([]);
+  // const [pending, setPending] = useState([]); // Moved to real-time fetch
 
   // Fetch barbers din Supabase
   useEffect(() => {
@@ -124,11 +120,11 @@ function AdminDashboard() {
     setBookings(prev => prev.map(b => b.id === appointmentId ? { ...b, status: 'accepted' } : b));
     setPending(prev => prev.filter(b => b.id !== appointmentId));
   }
-  async function handleReject(appointmentId) {
-    await supabase.from('appointments').update({ status: 'rejected' }).eq('id', appointmentId);
-    setBookings(prev => prev.map(b => b.id === appointmentId ? { ...b, status: 'rejected' } : b));
-    setPending(prev => prev.filter(b => b.id !== appointmentId));
-  }
+  // async function handleReject(appointmentId) {
+  //   await supabase.from('appointments').update({ status: 'rejected' }).eq('id', appointmentId);
+  //   setBookings(prev => prev.map(b => b.id === appointmentId ? { ...b, status: 'rejected' } : b));
+  //   setPending(prev => prev.filter(b => b.id !== appointmentId));
+  // }
 
   function getSlotStatus(barber, hour) {
     const b = bookings.find(b => b.barber_id === barber.id && b.hour === hour);
@@ -136,28 +132,28 @@ function AdminDashboard() {
     return b;
   }
 
-  // Adaug handler pentru click pe slot
-  async function handleSlotToggle(barberId, date, hour) {
-    // Caută dacă există deja o programare pe slotul respectiv
-    const existing = bookings.find(b => b.barber_id === barberId && b.date === date && b.hour === hour && (b.status === 'accepted' || b.status === 'confirmed'));
-    if (existing) {
-      // Dacă e ocupat, șterge programarea
-      await supabase.from('appointments').delete().eq('id', existing.id);
-      setBookings(prev => prev.filter(b => b.id !== existing.id));
-    } else {
-      // Dacă e liber, creează o programare dummy cu status 'accepted'
-      const { data } = await supabase.from('appointments').insert({
-        user_name: 'Slot ocupat',
-        user_phone: '',
-        user_email: '',
-        barber_id: barberId,
-        date,
-        hour,
-        status: 'accepted'
-      }).select();
-      if (data && data[0]) setBookings(prev => [...prev, data[0]]);
-    }
-  }
+  // // Adaug handler pentru click pe slot
+  // async function handleSlotToggle(barberId, date, hour) {
+  //   // Caută dacă există deja o programare pe slotul respectiv
+  //   const existing = bookings.find(b => b.barber_id === barberId && b.date === date && b.hour === hour && (b.status === 'accepted' || b.status === 'confirmed'));
+  //   if (existing) {
+  //     // Dacă e ocupat, șterge programarea
+  //     await supabase.from('appointments').delete().eq('id', existing.id);
+  //     setBookings(prev => prev.filter(b => b.id !== existing.id));
+  //   } else {
+  //     // Dacă e liber, creează o programare dummy cu status 'accepted'
+  //     const { data } = await supabase.from('appointments').insert({
+  //       user_name: 'Slot ocupat',
+  //       user_phone: '',
+  //       user_email: '',
+  //       barber_id: barberId,
+  //       date,
+  //       hour,
+  //       status: 'accepted'
+  //     }).select();
+  //     if (data && data[0]) setBookings(prev => [...prev, data[0]]);
+  //   }
+  // }
 
   // Controller pentru gestionare barbers
   const [newBarber, setNewBarber] = useState({ name: '', description: '', avatar_url: '' });
@@ -410,7 +406,7 @@ function App() {
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     return () => io.disconnect();
   }, []);
-  const [submitAttempts, setSubmitAttempts] = useState(0);
+  // const [submitAttempts, setSubmitAttempts] = useState(0); // Not used in current implementation
 
   // Scroll effect pentru header
   useEffect(() => {
@@ -429,16 +425,16 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleOpenCalendar = () => {
-    setCalendarOpen(true);
-    setStep(1);
-    setSelectedSpecialist(null);
-    setSelectedDate(null);
-    setSelectedSlot(null);
-    setFormData({ name: "", phone: "", email: "" });
-    setCalendarMonth(new Date());
-    setSelectedService(null);
-  };
+  // const handleOpenCalendar = () => {
+  //   setCalendarOpen(true);
+  //   setStep(1);
+  //   setSelectedSpecialist(null);
+  //   setSelectedDate(null);
+  //   setSelectedSlot(null);
+  //   setFormData({ name: "", phone: "", email: "" });
+  //   setCalendarMonth(new Date());
+  //   setSelectedService(null);
+  // };
   const handleCloseCalendar = () => setCalendarOpen(false);
 
   // Fetch barbers din Supabase pentru user
@@ -472,9 +468,9 @@ function App() {
     setSelectedSpecialist(spec);
     setStep(2);
   };
-  const handleChooseService = (service) => {
-    setSelectedService(service);
-  };
+  // const handleChooseService = (service) => {
+  //   setSelectedService(service);
+  // };
 
   // Step 2: alegere dată/ora
   const handleChooseDate = (date) => {
@@ -568,32 +564,32 @@ function App() {
   const today = new Date();
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-  // Demo: sloturi ocupate random
-  const busySlots = {
-    [format(today, "yyyy-MM-dd")]: [ALL_SLOTS[0], ALL_SLOTS[1]],
-    [format(addDays(today, 1), "yyyy-MM-dd")]: ["12:00"]
-  };
-  function isSlotBusy(date, slot) {
-    const key = format(date, "yyyy-MM-dd");
-    return busySlots[key]?.includes(slot);
-  }
+  // // Demo: sloturi ocupate random
+  // const busySlots = {
+  //   [format(today, "yyyy-MM-dd")]: [ALL_SLOTS[0], ALL_SLOTS[1]],
+  //   [format(addDays(today, 1), "yyyy-MM-dd")]: ["12:00"]
+  // };
+  // function isSlotBusy(date, slot) {
+  //   const key = format(date, "yyyy-MM-dd");
+  //   return busySlots[key]?.includes(slot);
+  // }
 
   // --- În componentă, definesc days, todayIdx și isOpenNow ---
-  const days = [
-    { label: 'Luni', hours: '09:00 - 21:00' },
-    { label: 'Marți', hours: '09:00 - 21:00' },
-    { label: 'Miercuri', hours: '09:00 - 21:00' },
-    { label: 'Joi', hours: '09:00 - 21:00' },
-    { label: 'Vineri', hours: '09:00 - 21:00' },
-    { label: 'Sâmbătă', hours: '09:00 - 21:00' },
-    { label: 'Duminică', hours: '09:00 - 21:00' },
-  ];
-  const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
-  const now = new Date();
-  const isOpenNow = (() => {
-    const h = now.getHours(), m = now.getMinutes();
-    return h >= 9 && (h < 21 || (h === 21 && m === 0));
-  })();
+  // const days = [
+  //   { label: 'Luni', hours: '09:00 - 21:00' },
+  //   { label: 'Marți', hours: '09:00 - 21:00' },
+  //   { label: 'Miercuri', hours: '09:00 - 21:00' },
+  //   { label: 'Joi', hours: '09:00 - 21:00' },
+  //   { label: 'Vineri', hours: '09:00 - 21:00' },
+  //   { label: 'Sâmbătă', hours: '09:00 - 21:00' },
+  //   { label: 'Duminică', hours: '09:00 - 21:00' },
+  // ];
+  // const todayIdx = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+  // const now = new Date();
+  // const isOpenNow = (() => {
+  //   const h = now.getHours(), m = now.getMinutes();
+  //   return h >= 9 && (h < 21 || (h === 21 && m === 0));
+  // })();
 
   return (
     <Router>
