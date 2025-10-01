@@ -663,12 +663,10 @@ function App() {
                       <button
                         className="service-book-btn"
                         onClick={() => {
-                          setSelectedService(service);
-                          setCalendarOpen(true);
-                          setStep(1);
+                          window.open('https://mero.ro/p/boom-barbershop', '_blank');
                         }}
                       >
-                        Programează
+                        Programează pe Mero
                       </button>
                     </div>
                   );
